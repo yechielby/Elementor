@@ -100,7 +100,18 @@ Text Domain: twentytwentychild
   border-bottom: 3px solid transparent;
   border-top: 3px solid #CD2653;
 }
+/* -------------------------------------------------------------------------- */
+/*	singular
+/* -------------------------------------------------------------------------- */
+.singular .grid .featured-media-inner {
+    position: relative;
+    left: 0;
+    width: 100%;
+}
 
+.singular .section-categories {
+    margin-top: 8rem;
+}
 /* -------------------------------------------------------------------------- */
 /*	Media Queries
 /* -------------------------------------------------------------------------- */
