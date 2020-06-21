@@ -60,23 +60,21 @@ function twentytwentychild_custom_post_type() {
 		'update_item'         => __( 'Update Product', 'twentytwentychild' ),
 		'search_items'        => __( 'Search Product', 'twentytwentychild' ),
 		'not_found'           => __( 'Not Found', 'twentytwentychild' ),
-		'not_found_in_trash'  => __( 'Not found in Trash', 'twentytwentychild' ),
-	);
-		 
+        'not_found_in_trash'  => __( 'Not found in Trash', 'twentytwentychild' )
+    );
+
 	// Set other options for Custom Post Type
 	$args = array(
-		'label'               => __( 'Products', 'twentytwentychild' ),
-		'labels' => $labels,
-		'has_archive' => true,
-		'menu_position'       	=> 5,
-		'menu_icon'				=> 'dashicons-tag',
-		'public' => true,
-		'rewrite' => array( 'slug' => 'products' ),
-		'show_in_rest' => true,
-		'supports' => array( 'title', 'editor', 'thumbnail' ), //array( 'title', 'editor', 'excerpt', 'author', 'comments', 'revisions', 'custom-fields', ),
-		'publicly_queryable'  	=> true,
-		'query_var'          => true,		
-	);
+		'label'                 => __( 'Products', 'twentytwentychild' ),
+		'labels'                => $labels,
+		'has_archive'           => true,
+		'menu_position'         => 5,
+		'menu_icon'             => 'dashicons-tag',
+		'public'                => true,
+		'rewrite'               => array( 'slug' => 'products' ),
+		'show_in_rest'          => true,
+		'supports'              => array( 'title', 'editor', 'thumbnail', 'custom-fields' ), //array( 'title', 'editor', 'excerpt', 'author', 'comments', 'revisions', 'custom-fields', ),
+    );
 
 	register_post_type( 'products', $args );
 }
@@ -87,7 +85,7 @@ add_action( 'init', 'twentytwentychild_custom_post_type', 0 );
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // create taxonomies, Categories for the post type 'product'.
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
- function twentytwentychild_register_new_taxonomy() {
+function twentytwentychild_register_new_taxonomy() {
     $labels = [
 		'name'              => _x( 'Categories', 'taxonomy general name', 'twentytwentychild' ),
 		'singular_name'     => _x( 'Category', 'taxonomy singular name', 'twentytwentychild' ),
@@ -99,9 +97,9 @@ add_action( 'init', 'twentytwentychild_custom_post_type', 0 );
 		'update_item'       => __( 'Update Category', 'twentytwentychild' ),
 		'add_new_item'      => __( 'Add New Category', 'twentytwentychild' ),
 		'new_item_name'     => __( 'New Category Name', 'twentytwentychild' ),
-		'menu_name'         => __( 'Categories', 'twentytwentychild' ), 
+		'menu_name'         => __( 'Categories', 'twentytwentychild' ),
 	];
-	 
+
 	// Configuration parameters for the Category taxonomy.
 	$args = [
 		'hierarchical'      => true,
@@ -112,10 +110,67 @@ add_action( 'init', 'twentytwentychild_custom_post_type', 0 );
 		'query_var'         => true,
 		'rewrite'           => [ 'slug' => 'custom_categories' ],
 	];
-	 
+
 	register_taxonomy( 'custom_categories', [ 'products' ], $args );
 }
 add_action( 'init', 'twentytwentychild_register_new_taxonomy', 0 );
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\
+// register meta for products
+//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\
+function twentytwentychild_register_meta() {
+    
+    register_post_meta( 'products', 'twentytwentychild_products_description', array(
+        'type'		=> 'string',
+        'single'	=> true,
+        'show_in_rest'	=> true,
+    ) );
+
+    register_post_meta( 'products', 'twentytwentychild_products_price', array(
+        'type'		=> 'number',
+        'single'	=> true,
+        'show_in_rest'	=> true,
+    ) );
+
+    register_post_meta( 'products', 'twentytwentychild_products_is_on_sale', array(
+        'type'		=> 'boolean',
+        'single'	=> true,
+        'show_in_rest'	=> true,
+    ) );
+    
+    register_post_meta( 'products', 'twentytwentychild_products_sele_price', array(
+        'type'		=> 'number',
+        'single'	=> true,
+        'show_in_rest'	=> true,
+    ) );
+    register_post_meta( 'products', 'twentytwentychild_products_video', array(
+        'type'		=> 'string',
+        'single'	=> true,
+        'show_in_rest'	=> true,
+    ) );
+
+};
+add_action( 'init', 'twentytwentychild_register_meta');
+//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// add react components in sidebar on Gutenberg
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function twentytwentychild_enqueue_assets() {
+    $screen = get_current_screen();
+    if( $screen->post_type != 'products' ) return; // only for Product
+    
+    wp_enqueue_script(
+        'twentytwentychild-gutenberg-sidebar',
+        get_stylesheet_directory_uri() . '/sidebar/products.js',
+        array( 'wp-i18n', 'wp-blocks', 'wp-edit-post', 'wp-element', 'wp-editor', 'wp-components', 'wp-data', 'wp-plugins', 'wp-edit-post' ),
+        filemtime( dirname( __FILE__ ) . '/sidebar/products.js' )
+    );
+}
+add_action( 'enqueue_block_editor_assets', 'twentytwentychild_enqueue_assets' );
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
