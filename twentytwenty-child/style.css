@@ -49,7 +49,36 @@ Text Domain: twentytwentychild
     font-variant-numeric: lining-nums;
     text-decoration: none;
 }
+.grid-column-center {
+    grid-column: 1 / 3;
+}
 
+.price {
+    font-weight: bold;
+    text-align: center;
+}
+.price span {
+    color: red;
+    text-decoration: line-through;
+    display: block;
+    font-size: 0.7em;
+}
+/* -------------------------------------------------------------------------- */
+/*	singular
+/* -------------------------------------------------------------------------- */
+.singular .grid .featured-media-inner {
+    position: relative;
+    left: 0;
+    width: 100%;
+}
+
+.singular .section-categories {
+    margin-top: 8rem;
+}
+
+.singular  .price {
+    margin: 1em 0;
+}
 /* -------------------------------------------------------------------------- */
 /*	sale
 /* -------------------------------------------------------------------------- */
@@ -101,32 +130,6 @@ Text Domain: twentytwentychild
   border-top: 3px solid #CD2653;
 }
 
-.price {
-    font-weight: bold;
-    text-align: center;
-}
-.price span {
-    color: red;
-    text-decoration: line-through;
-    display: block;
-    font-size: 0.7em;
-}
-/* -------------------------------------------------------------------------- */
-/*	singular
-/* -------------------------------------------------------------------------- */
-.singular .grid .featured-media-inner {
-    position: relative;
-    left: 0;
-    width: 100%;
-}
-
-.singular .section-categories {
-    margin-top: 8rem;
-}
-
-.singular  .price {
-    margin: 1em 0;
-}
 /* -------------------------------------------------------------------------- */
 /*	Media Queries
 /* -------------------------------------------------------------------------- */
@@ -137,5 +140,8 @@ Text Domain: twentytwentychild
         column-gap: 4rem;
         row-gap: 4rem;
         margin-bottom: 4rem;
+    }
+    .grid-column-center {
+        grid-column: 2;
     }
 }
