@@ -7,7 +7,7 @@ function twentytwentychild_theme_enqueue_styles() {
     $parenthandle = 'twentytwenty-style';
     $theme = wp_get_theme();
     wp_enqueue_style( $parenthandle, get_template_directory_uri() . '/style.css', array(), $theme->parent()->get('Version') );
-    wp_enqueue_style( 'twentytwenty-child-style', get_stylesheet_uri(), array( $parenthandle ), $theme->get('Version') );
+    wp_enqueue_style( 'twentytwenty-child-style', get_stylesheet_uri(), array( $parenthandle ), filemtime( dirname( __FILE__ ) . '/style.js' ) );
 }
 add_action( 'wp_enqueue_scripts', 'twentytwentychild_theme_enqueue_styles' );
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -177,7 +177,21 @@ add_action( 'enqueue_block_editor_assets', 'twentytwentychild_enqueue_assets' );
 //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\
 //
 //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\
-// code..
+function get_product_description( $id ) {
+    return get_post_meta($id, 'twentytwentychild_products_description', true);
+}
+function get_product_price( $id ) {
+    return get_post_meta($id, 'twentytwentychild_products_price', true);
+}
+function get_product_is_on_sale( $id ) {
+    return get_post_meta($id, 'twentytwentychild_products_is_on_sale', true);
+}
+function get_product_sele_price( $id ) {
+    return get_post_meta($id, 'twentytwentychild_products_sele_price', true);
+}
+function get_product_video( $id ) {
+    return get_post_meta($id, 'twentytwentychild_products_video', true);
+}
 //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\
 
 

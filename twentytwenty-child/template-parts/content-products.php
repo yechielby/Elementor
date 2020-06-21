@@ -9,35 +9,34 @@
  * @since Twenty Twenty 1.0
  */
 
+$post_id = get_the_ID();
+$description = get_product_description($post_id);
+$video = get_product_video($post_id);
+$price = get_product_price($post_id);
+$is_on_sale = get_product_is_on_sale($post_id);
+$sele_price = get_product_sele_price($post_id);
 ?>
 
 <article <?php post_class(); ?> id="post-<?php the_ID(); ?>">
 
+	<header class="entry-header has-text-align-center header-footer-group">
+		<div class="entry-header-inner section-inner medium">
+			<h1 class="entry-title"><?php the_title(); ?></h1>
+		</div><!-- .entry-header-inner -->
+	</header>
+	
 	<?php
-
-	get_template_part( 'template-parts/entry-header' );
-
-	if ( ! is_search() ) {
-		get_template_part( 'template-parts/featured-image' );
+	get_template_part( 'template-parts/featured-image' );
+	echo '<p class="price">$' . ( $is_on_sale ? $price.'<span>$'.$sele_price.'</span>' : $price ) . '</p>';
+	
+	echo '<div class="section-inner section-description">';
+	echo 	'<h2 class="widget-title subheading heading-size-3">'.__('Product Description', 'twentytwentychild' ).'</h2>';
+	echo	'<p class="heading-size-5">'.$description.'</p>';
+	if ($video) {
+	echo 	'<iframe  class="product-video"  width="1280" height="720" src="'.$video.'" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
 	}
-
+	echo '</div>';
 	?>
-
-	<div class="post-inner <?php echo is_page_template( 'templates/template-full-width.php' ) ? '' : 'thin'; ?> ">
-
-		<div class="entry-content">
-
-			<?php
-			if ( is_search() || ! is_singular() && 'summary' === get_theme_mod( 'blog_content', 'full' ) ) {
-				the_excerpt();
-			} else {
-				the_content( __( 'Continue reading', 'twentytwenty' ) );
-			}
-			?>
-
-		</div><!-- .entry-content -->
-
-	</div><!-- .post-inner -->
 
 	<div class="section-inner">
 		<?php
@@ -66,7 +65,6 @@
 
 	<?php
 	// Related Products
-	$post_id = get_the_ID();
 	$categories = wp_get_post_terms($post_id, 'custom_categories');
 	// get the list category in this product.
 	$categories_ids = array();
@@ -97,9 +95,11 @@
 					while ( $the_query->have_posts() ) {
 						$the_query->the_post();
 						echo '<a href="' . esc_url( get_permalink() ) . '" class="grid-column">';
-						get_template_part( 'template-parts/featured-image' );
-						the_title( '<p class="entry-title grid-title">', '</p>' );
-						echo '<div class="sale"><span>'.__('SALE', 'twentytwentychild' ).'</span></div>';
+							get_template_part( 'template-parts/featured-image' );
+							the_title( '<p class="entry-title grid-title">', '</p>' );
+							if ( get_product_is_on_sale( get_the_ID() ) ) {
+							echo '<div class="sale"><span>'.__('SALE', 'twentytwentychild' ).'</span></div>';
+							}
 						echo '</a>';
 					}
 				echo '</div>'.
