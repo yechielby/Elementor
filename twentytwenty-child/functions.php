@@ -7,7 +7,7 @@ function twentytwentychild_theme_enqueue_styles() {
     $parenthandle = 'twentytwenty-style';
     $theme = wp_get_theme();
     wp_enqueue_style( $parenthandle, get_template_directory_uri() . '/style.css', array(), $theme->parent()->get('Version') );
-    wp_enqueue_style( 'twentytwenty-child-style', get_stylesheet_uri(), array( $parenthandle ), filemtime( dirname( __FILE__ ) . '/style.js' ) );
+    wp_enqueue_style( 'twentytwenty-child-style', get_stylesheet_uri(), array( $parenthandle ), filemtime( dirname( __FILE__ ) . '/style.css' ) );
 }
 add_action( 'wp_enqueue_scripts', 'twentytwentychild_theme_enqueue_styles' );
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -196,7 +196,47 @@ function get_product_video( $id ) {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
+// shortcode
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// code..
+function get_featured_image_by_id( $id ){
+	global $post; 
+	$post = get_post($id); 
+
+	ob_start();
+	get_template_part( 'template-parts/featured-image');
+	$result = ob_get_contents(); 
+	ob_end_clean();  
+	wp_reset_postdata();
+
+	return $result;
+}
+function twentytwentychild_product_shortcode($atts) {
+
+	extract(shortcode_atts(array(
+		'id'=>0,
+		'color'=>'#BBB'
+    ), $atts));
+    
+	$result = '';
+
+	if( $id ) {
+        $price = get_product_price($id);
+        $is_on_sale = get_product_is_on_sale($id);
+        $sele_price = get_product_sele_price($id);
+
+		$result .=	'<div class="grid">';
+		$result .= 		'<a href="' . esc_url( get_permalink($id) ) . '" class="grid-column grid-column-center" style="border: 1px solid '. $color .';">';
+		$result .= 			get_featured_image_by_id($id);
+		$result .=			'<p class="entry-title grid-title">' . get_the_title($id) . '</p>';
+		$result .=			'<p class="price">' . ( $is_on_sale ? $price.'<span>'.$sele_price.'</span>' : $price ) . '</p>';
+		if( $is_on_sale ) {
+			$result .= 		'<div class="sale"><span>'.__('SALE', 'twentytwentychild' ).'</span></div>';
+		}
+		$result .= 		'</a>';
+		$result .=	'</div>';
+	}
+
+	return $result;
+}
+add_shortcode('product', 'twentytwentychild_product_shortcode');
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
