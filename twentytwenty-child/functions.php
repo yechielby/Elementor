@@ -245,15 +245,58 @@ add_shortcode('product', 'twentytwentychild_product_shortcode');
 //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\
 // test filter as 'custom_shortcode_product'
 //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\
-// function aSimpleShortcodeFilter(string $input): string	{
+// function aShortcodeFilter(string $input): string	{
 //     return '<div style="background: red;">'.$input.'</div>';	
 // }
-// add_filter('custom_shortcode_product', 'aSimpleShortcodeFilter');
+// add_filter('custom_shortcode_product', 'aShortcodeFilter');
 //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
+// add endpoint “../wp-json/products/v1/category/slug_or_id”
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// code..
+function twentytwentychild_products_post_by_category_slug_or_id( $val ) {
+    $query_on = is_numeric($val['pram']) ? 'id' : 'slug';
+	$args = [
+        'post_type' => 'products',
+        'posts_per_page' => -1,
+        'tax_query' => array(
+            array(
+                'taxonomy' => 'custom_categories',
+                'field' => $query_on,
+                'terms' => $val['pram']
+            )
+        )
+	];
+
+	$posts = get_posts($args);
+
+
+	$data = [];
+	$i = 0;
+	foreach($posts as $post) {
+		$data[$i]['id'] = $post->ID;
+        $data[$i]['slug'] = $post->post_name;
+        $data[$i]['link'] = get_permalink( $post->ID );
+		$data[$i]['title'] = $post->post_title;
+        $data[$i]['description'] = get_product_description($post->ID);
+		$data[$i]['featured_image']['thumbnail'] = get_the_post_thumbnail_url($post->ID, 'thumbnail');
+		$data[$i]['featured_image']['medium'] = get_the_post_thumbnail_url($post->ID, 'medium');
+        $data[$i]['featured_image']['large'] = get_the_post_thumbnail_url($post->ID, 'large');
+        $data[$i]['price'] = get_product_price($post->ID);
+        $data[$i]['is_on_sale'] = get_product_is_on_sale($post->ID);
+        $data[$i]['sele_price'] = get_product_sele_price($post->ID);
+		$i++;
+	}
+
+	return $data;
+}
+
+function twentytwentychild_new_endpoints() {
+	register_rest_route( 'products/v1', 'category/(?P<pram>[a-zA-Z0-9-]+)', array(
+		'methods' => 'GET',
+		'callback' => 'twentytwentychild_products_post_by_category_slug_or_id',
+	) );
+};
+add_action('rest_api_init', 'twentytwentychild_new_endpoints');
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
