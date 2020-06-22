@@ -300,3 +300,32 @@ function twentytwentychild_new_endpoints() {
 };
 add_action('rest_api_init', 'twentytwentychild_new_endpoints');
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\
+//
+//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\
+function twentytwentychild_custom_columns_posts_head($defaults) {
+    // ADD NEW COLUMN
+    $new_array['shortcode'] = '<div style="text-align: center;">Shortcode<div>';
+    array_splice( $defaults, 3, 0, $new_array );
+    return $defaults;
+}
+
+function twentytwentychild_custom_columns_content($column_name, $post_ID) {
+    switch ( $column_name ) {
+        case 'shortcode':
+            echo '<div style="text-align: center;"><code>[product id="'.$post_ID.'" color="#BBB"]</code><div>';
+            break;
+    }
+}
+add_filter('manage_products_posts_columns', 'twentytwentychild_custom_columns_posts_head');
+add_action('manage_products_posts_custom_column', 'twentytwentychild_custom_columns_content', 10,2);
+//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// code..
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
